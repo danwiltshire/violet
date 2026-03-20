@@ -6,7 +6,7 @@
 flowchart TD
     A[Media file uploaded to s3://violet-prod-media/ingest/] --> B[EventBridge triggers Step Functions]
     B --> C[Update Catalog: Lambda guesses metadata from filename]
-    C --> D[Transcode: Elemental MediaConvert creates HLS/DASH variants (1080p, 720p, etc.)]
+    C --> D["Transcode: Elemental MediaConvert creates HLS/DASH variants (1080p, 720p, etc.)"]
     D --> E[Store transcoded files in s3://violet-prod-media/output/]
     E --> F[Invalidate API Cache: CloudFront cache cleared]
     F --> G[Delete original ingest file]
@@ -20,6 +20,7 @@ flowchart TD
         subgraph S3
             A[s3://violet-prod-media/ingest/]
             B[s3://violet-prod-media/output/]
+            J[s3://violet-prod-media/frontend/ - Web App]
         end
         subgraph Lambda
             C[API Function]
@@ -41,9 +42,6 @@ flowchart TD
             I[Container Repository]
         end
     end
-    subgraph Local
-        J[Web App - Angular]
-    end
     A --> E
     E --> D
     D --> H
@@ -51,6 +49,6 @@ flowchart TD
     F --> B
     E --> G
     C --> H
-    J --> G
+    G --> J
     G --> C
 ```
