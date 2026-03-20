@@ -10,7 +10,7 @@ Violet has been a pet project of mine for the past five years, and I usually onl
 
 - Metadata extraction from filenames, e.g. `Hot Fuzz (2007)` or `Frasier (1999) - S01E01 - The Good Son`.
 
-- Automatic download of posters and stills from [The MovieDB](https://www.themoviedb.org).
+- Automatic download of posters and stills from [The Movie Database](https://www.themoviedb.org).
 
 - Automatic transcode of media into HLS and MPEG-DASH into 1080p, 720p, 540p and 360p.
 
@@ -59,7 +59,7 @@ If you want to deploy Violet into your own AWS account, just know I don't provid
 
 With that said, you'll need the following:
 
-- An API key for [The MovieDB](https://www.themoviedb.org) used for artwork collection.
+- An API key for [The Movie Database](https://www.themoviedb.org) used for artwork collection.
 
 - An AWS CLI profile named `admin`.
 
