@@ -19,6 +19,8 @@ data "aws_cloudfront_origin_request_policy" "all_viewer_except_host" {
 }
 
 resource "aws_wafv2_web_acl" "this" {
+  # checkov:skip=CKV2_AWS_31: Not bothing with WAF logs for this demo app.
+  # checkov:skip=CKV_AWS_192: Not a Java app - Log4j not used.
   name        = "violet-${var.environment_name}-waf"
   region      = "us-east-1"
   description = "WAF for Violet"
@@ -137,6 +139,7 @@ resource "aws_cloudfront_distribution" "this" {
   # checkov:skip=CKV_AWS_310: Don't need origin failover
   # checkov:skip=CKV_AWS_86: Using CloudWatch Logs for logging
   # checkov:skip=CKV_AWS_174: Using TLSv1 for the CloudFront-managed TLS certificate
+  # checkov:skip=CKV2_AWS_47: Log4j protection not required for the application.
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "Some comment"
@@ -283,11 +286,11 @@ resource "aws_route53_record" "ipv6" {
     name                   = aws_cloudfront_distribution.this.domain_name
     zone_id                = aws_cloudfront_distribution.this.hosted_zone_id
     evaluate_target_health = false
-
   }
 }
 
 module "acm" {
+  # checkov:skip=CKV_TF_1: Using friendly versions based on their docs.
   source  = "terraform-aws-modules/acm/aws"
   version = "6.3.0"
 

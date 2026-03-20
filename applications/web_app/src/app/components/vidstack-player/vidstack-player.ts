@@ -6,22 +6,18 @@ import 'vidstack/player/ui';
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: "app-vidstack-player",
+  selector: 'app-vidstack-player',
   templateUrl: './vidstack-player.html',
   standalone: true,
   imports: [],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   styleUrls: [],
 })
 export class VidStackPlayerComponent {
   mediaId = input.required<string>();
-  mediaSrc = computed(() =>
-    `${environment.outputBaseUrl}/${this.mediaId()}/stream/${this.mediaId()}.mpd`
+  mediaSrc = computed(
+    () => `${environment.outputBaseUrl}/${this.mediaId()}/stream/${this.mediaId()}.mpd`,
   );
   posterPath = input.required<string>();
-  posterUrl = computed(() =>
-    `${environment.imagesBaseUrl}/${this.posterPath()}`
-  );
+  posterUrl = computed(() => `${environment.imagesBaseUrl}/${this.posterPath()}`);
 }

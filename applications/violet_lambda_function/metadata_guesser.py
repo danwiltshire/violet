@@ -34,12 +34,13 @@ def guess_metadata_from_filename(filename: str):
 
     elif type == "movie":
         return MovieMetadata(
-            title=guessed_metadata.get("title"),
-            year=str(guessed_metadata.get("year"))
+            title=guessed_metadata.get("title"), year=str(guessed_metadata.get("year"))
         )
 
     else:
-        raise ValueError(f"The response from GuessIt returned an expected type '{type}', expected 'episode' or 'movie'.")
+        raise ValueError(
+            f"The response from GuessIt returned an expected type '{type}', expected 'episode' or 'movie'."
+        )
 
 
 def search_external_movie_metadata(title: str, year: int):

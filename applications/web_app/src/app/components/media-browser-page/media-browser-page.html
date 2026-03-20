@@ -1,8 +1,13 @@
 <app-media-browser-header />
 
 <section class="container mx-auto px-4 grid grid-cols-3 md:grid-cols-6 gap-x-8 gap-y-4">
-    @for (card of cards(); track card.id) {
-    <app-media-card-component [mediaId]="card.id" [title]="card.title" [subtitle]="card.subtitle"
-        [bannerImageSrc]="card.imageSrc" [routerLink]="card.routerLink" />
-    }
+  @for (card of cards(); track card.id) {
+    <app-media-card-component
+      [mediaId]="card.id"
+      [title]="card.title"
+      [subtitle]="card.subtitle"
+      [bannerImageSrc]="card.imageSrc"
+      [routerLink]="card.routerLink"
+    />
+  }
 </section>

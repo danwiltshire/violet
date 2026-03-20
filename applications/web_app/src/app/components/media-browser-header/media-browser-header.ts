@@ -7,6 +7,4 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './media-browser-header.html',
   styleUrl: './media-browser-header.css',
 })
-export class MediaBrowserHeader {
-
-}
+export class MediaBrowserHeader {}

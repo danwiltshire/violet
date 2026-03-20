@@ -2,7 +2,7 @@ from metadata_guesser import TVEpisodeMetadata, MovieMetadata
 import boto3
 import logging
 
-from boto3.dynamodb.conditions import Key, Attr
+from boto3.dynamodb.conditions import Key
 
 from uuid import uuid4
 from botocore.exceptions import ClientError
@@ -24,12 +24,15 @@ def generate_media_id():
     return str(uuid4())
 
 
-def put_if_absent(item: dict[str, any], condition="attribute_not_exists(PK) AND attribute_not_exists(SK)"):
+def put_if_absent(
+    item: dict[str, any],
+    condition="attribute_not_exists(PK) AND attribute_not_exists(SK)",
+):
     try:
         table.put_item(
             Item=item,
             ConditionExpression=condition,
-            ReturnValuesOnConditionCheckFailure='ALL_OLD',
+            ReturnValuesOnConditionCheckFailure="ALL_OLD",
         )
 
         return item["Id"]
@@ -41,17 +44,22 @@ def put_if_absent(item: dict[str, any], condition="attribute_not_exists(PK) AND 
 
 
 def put_movie_catalog_item(metadata: MovieMetadata):
-    movie_id = put_if_absent({
-        "PK": "MOVIE",
-        "SK": slugify(metadata.title),
-        "Id": generate_media_id(),
-        "Title": metadata.title,
-        "Year": metadata.year,
-    })
+    movie_id = put_if_absent(
+        {
+            "PK": "MOVIE",
+            "SK": slugify(metadata.title),
+            "Id": generate_media_id(),
+            "Title": metadata.title,
+            "Year": metadata.year,
+        }
+    )
 
-    logger.info("Movie metadata saved in DynamoDB", extra={
-        "movie_id": movie_id,
-    })
+    logger.info(
+        "Movie metadata saved in DynamoDB",
+        extra={
+            "movie_id": movie_id,
+        },
+    )
 
     return movie_id
 
@@ -59,35 +67,44 @@ def put_movie_catalog_item(metadata: MovieMetadata):
 def put_episode_catalog_item(metadata: TVEpisodeMetadata):
     season_title = f"Season {metadata.season}" if metadata.season >= 1 else "Specials"
 
-    series_id = put_if_absent({
-        "PK": "SERIES",
-        "SK": slugify(metadata.series_title),
-        "Id": generate_media_id(),
-        "Title": metadata.series_title,
-        "Year": metadata.series_year,
-    })
+    series_id = put_if_absent(
+        {
+            "PK": "SERIES",
+            "SK": slugify(metadata.series_title),
+            "Id": generate_media_id(),
+            "Title": metadata.series_title,
+            "Year": metadata.series_year,
+        }
+    )
 
-    season_id = put_if_absent({
-        "PK": f"SEASON#{slugify(metadata.series_title)}",
-        "SK": slugify(season_title),
-        "Id": generate_media_id(),
-        "Title": season_title,
-        "SeasonNumber": metadata.season,
-    })
+    season_id = put_if_absent(
+        {
+            "PK": f"SEASON#{slugify(metadata.series_title)}",
+            "SK": slugify(season_title),
+            "Id": generate_media_id(),
+            "Title": season_title,
+            "SeasonNumber": metadata.season,
+        }
+    )
 
-    episode_id = put_if_absent({
-        "PK": f"EPISODE#{slugify(metadata.series_title)}#{slugify(season_title)}",
-        "SK": zpad(metadata.episode),
-        "Id": generate_media_id(),
-        "Title": metadata.title,
-        "EpisodeNumber": metadata.episode,
-    })
-    
-    logger.info("Episode metadata saved in DynamoDB", extra={
-        "series_id": series_id,
-        "season_id": season_id,
-        "episode_id": episode_id,
-    })
+    episode_id = put_if_absent(
+        {
+            "PK": f"EPISODE#{slugify(metadata.series_title)}#{slugify(season_title)}",
+            "SK": zpad(metadata.episode),
+            "Id": generate_media_id(),
+            "Title": metadata.title,
+            "EpisodeNumber": metadata.episode,
+        }
+    )
+
+    logger.info(
+        "Episode metadata saved in DynamoDB",
+        extra={
+            "series_id": series_id,
+            "season_id": season_id,
+            "episode_id": episode_id,
+        },
+    )
 
     return series_id, season_id, episode_id
 
@@ -95,7 +112,7 @@ def put_episode_catalog_item(metadata: TVEpisodeMetadata):
 def get_movies():
     response = table.query(
         Limit=25,
-        KeyConditionExpression=Key('PK').eq('MOVIE'),
+        KeyConditionExpression=Key("PK").eq("MOVIE"),
     )
 
     items = response["Items"]
@@ -103,20 +120,22 @@ def get_movies():
     to_return = []
 
     for item in items:
-        to_return.append({
-            "title": item["Title"],
-            "id": item["Id"],
-            "year": item["Year"],
-            "slug": item["SK"],
-        })
-    
+        to_return.append(
+            {
+                "title": item["Title"],
+                "id": item["Id"],
+                "year": item["Year"],
+                "slug": item["SK"],
+            }
+        )
+
     return to_return
 
 
 def get_tv_series():
     response = table.query(
         Limit=25,
-        KeyConditionExpression=Key('PK').eq('SERIES'),
+        KeyConditionExpression=Key("PK").eq("SERIES"),
     )
 
     items = response["Items"]
@@ -124,20 +143,22 @@ def get_tv_series():
     to_return = []
 
     for item in items:
-        to_return.append({
-            "title": item["Title"],
-            "id": item["Id"],
-            "year": item["Year"],
-            "slug": item["SK"],
-        })
-    
+        to_return.append(
+            {
+                "title": item["Title"],
+                "id": item["Id"],
+                "year": item["Year"],
+                "slug": item["SK"],
+            }
+        )
+
     return to_return
 
 
 def get_tv_series_seasons(series_slug: str):
     response = table.query(
         Limit=25,
-        KeyConditionExpression=Key('PK').eq(f'SEASON#{series_slug}'),
+        KeyConditionExpression=Key("PK").eq(f"SEASON#{series_slug}"),
     )
 
     items = response["Items"]
@@ -145,20 +166,22 @@ def get_tv_series_seasons(series_slug: str):
     to_return = []
 
     for item in items:
-        to_return.append({
-            "title": item["Title"],
-            "id": item["Id"],
-            "season_number": item["SeasonNumber"],
-            "slug": item["SK"],
-        })
-    
+        to_return.append(
+            {
+                "title": item["Title"],
+                "id": item["Id"],
+                "season_number": item["SeasonNumber"],
+                "slug": item["SK"],
+            }
+        )
+
     return to_return
 
 
 def get_tv_series_season_episodes(series_slug: str, season_slug: str):
     response = table.query(
         Limit=25,
-        KeyConditionExpression=Key('PK').eq(f'EPISODE#{series_slug}#{season_slug}'),
+        KeyConditionExpression=Key("PK").eq(f"EPISODE#{series_slug}#{season_slug}"),
     )
 
     items = response["Items"]
@@ -166,11 +189,13 @@ def get_tv_series_season_episodes(series_slug: str, season_slug: str):
     to_return = []
 
     for item in items:
-        to_return.append({
-            "title": item["Title"],
-            "id": item["Id"],
-            "episode_number": item["EpisodeNumber"],
-            # "slug": item["SK"],
-        })
-    
+        to_return.append(
+            {
+                "title": item["Title"],
+                "id": item["Id"],
+                "episode_number": item["EpisodeNumber"],
+                # "slug": item["SK"],
+            }
+        )
+
     return to_return

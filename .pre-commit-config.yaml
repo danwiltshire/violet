@@ -12,8 +12,14 @@ repos:
     - id: checkov
     - id: checkov_secrets
 
-repos:
 - repo: https://github.com/tofuutils/pre-commit-opentofu
   rev: v2.2.2
   hooks:
     - id: tofu_fmt
+
+- repo: local
+  hooks:
+    - id: prettier
+      name: prettier
+      entry: bash -c "cd applications/web_app && npx prettier . --write"
+      language: node

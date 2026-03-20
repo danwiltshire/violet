@@ -8,9 +8,8 @@ describe('MediaBrowserPage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MediaBrowserPage]
-    })
-    .compileComponents();
+      imports: [MediaBrowserPage],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MediaBrowserPage);
     component = fixture.componentInstance;

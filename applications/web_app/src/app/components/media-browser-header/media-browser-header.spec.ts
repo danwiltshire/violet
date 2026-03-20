@@ -8,9 +8,8 @@ describe('MediaBrowserHeader', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MediaBrowserHeader]
-    })
-    .compileComponents();
+      imports: [MediaBrowserHeader],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MediaBrowserHeader);
     component = fixture.componentInstance;
