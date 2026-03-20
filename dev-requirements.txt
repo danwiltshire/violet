@@ -1,0 +1,5 @@
+-r applications/violet_lambda_function/requirements.txt
+
+boto3
+pre-commit
+invoke

@@ -1,0 +1,9 @@
+<a [routerLink]="routerLink()" class="block">
+    <img class="w-full rounded shadow-lg" src="{{ bannerImageSrc() }}" alt="Banner image for {{ title() }}">
+    <div class="py-3">
+        <div class="text-l font-bold text-white">{{ title() }}</div>
+        @if (subtitle()) {
+        <div class="text-sm text-white opacity-65">{{ subtitle() }}</div>
+        }
+    </div>
+</a>

@@ -1,0 +1,13 @@
+# Local Terraform state.
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Builds created by the Lambda module in terraform-aws-modules
+builds/
+
+# Python
+venv/
+
+# Local archive
+local_archive/

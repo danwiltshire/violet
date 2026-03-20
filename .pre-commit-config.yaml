@@ -1,0 +1,19 @@
+repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.15.5
+  hooks:
+    - id: ruff-check
+      args: [ --fix ]
+    - id: ruff-format
+
+- repo: https://github.com/bridgecrewio/checkov.git
+  rev: '3.2.507'
+  hooks:
+    - id: checkov
+    - id: checkov_secrets
+
+repos:
+- repo: https://github.com/tofuutils/pre-commit-opentofu
+  rev: v2.2.2
+  hooks:
+    - id: tofu_fmt

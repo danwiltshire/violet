@@ -1,1 +1,0 @@
-Documentation available in the project [Wiki](https://github.com/danwiltshire/violet/wiki).

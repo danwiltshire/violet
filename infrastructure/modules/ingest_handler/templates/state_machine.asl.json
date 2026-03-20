@@ -1,0 +1,230 @@
+{
+    "Comment": "Media ingest",
+    "StartAt": "Update Catalog",
+    "States": {
+        "Update Catalog": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Output": "{% $states.result.Payload %}",
+            "Arguments": {
+                "FunctionName": "${catalog_ingest_function_arn}",
+                "Payload": {
+                    "ObjectKey": "{% $states.context.Execution.Input.detail.object.key %}"
+                }
+            },
+            "Assign": {
+                "MediaId": "{% $states.result.Payload.MediaId %}"
+            },
+            "Next": "Transcode"
+        },
+        "Transcode": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::mediaconvert:createJob.sync",
+            "Arguments": {
+                "Role": "${mediaconvert_role_arn}",
+                "Settings": {
+                    "TimecodeConfig": {
+                        "Source": "ZEROBASED"
+                    },
+                    "OutputGroups": [
+                        {
+                            "Name": "CMAF ABR",
+                            "OutputGroupSettings": {
+                                "Type": "CMAF_GROUP_SETTINGS",
+                                "CmafGroupSettings": {
+                                    "Destination": "{% 's3://${bucket_name}/output/' & $MediaId & '/stream/' & $MediaId %}",
+                                    "SegmentLength": 6,
+                                    "FragmentLength": 2,
+                                    "SegmentControl": "SEGMENTED_FILES",
+                                    "SegmentLengthControl": "GOP_MULTIPLE",
+                                    "WriteHlsManifest": "ENABLED",
+                                    "WriteDashManifest": "ENABLED",
+                                    "MinBufferTime": 2
+                                }
+                            },
+                            "Outputs": [
+                                {
+                                    "NameModifier": "_v1080",
+                                    "ContainerSettings": {
+                                        "Container": "CMFC",
+                                        "CmfcSettings": {}
+                                    },
+                                    "VideoDescription": {
+                                        "Width": 1920,
+                                        "Height": 1080,
+                                        "ScalingBehavior": "DEFAULT",
+                                        "Sharpness": 50,
+                                        "CodecSettings": {
+                                            "Codec": "H_264",
+                                            "H264Settings": {
+                                                "RateControlMode": "QVBR",
+                                                "QvbrSettings": {
+                                                    "QvbrQualityLevel": 8
+                                                },
+                                                "MaxBitrate": 6000000,
+                                                "FramerateControl": "INITIALIZE_FROM_SOURCE",
+                                                "GopSizeUnits": "AUTO",
+                                                "GopClosedCadence": 1,
+                                                "NumberBFramesBetweenReferenceFrames": 3,
+                                                "SceneChangeDetect": "TRANSITION_DETECTION"
+                                            }
+                                        }
+                                    },
+                                    "AudioDescriptions": []
+                                },
+                                {
+                                    "NameModifier": "_v720",
+                                    "ContainerSettings": {
+                                        "Container": "CMFC",
+                                        "CmfcSettings": {}
+                                    },
+                                    "VideoDescription": {
+                                        "Width": 1280,
+                                        "Height": 720,
+                                        "ScalingBehavior": "DEFAULT",
+                                        "Sharpness": 50,
+                                        "CodecSettings": {
+                                            "Codec": "H_264",
+                                            "H264Settings": {
+                                                "RateControlMode": "QVBR",
+                                                "QvbrSettings": {
+                                                    "QvbrQualityLevel": 8
+                                                },
+                                                "MaxBitrate": 3500000,
+                                                "FramerateControl": "INITIALIZE_FROM_SOURCE",
+                                                "GopSizeUnits": "AUTO",
+                                                "GopClosedCadence": 1,
+                                                "NumberBFramesBetweenReferenceFrames": 3,
+                                                "SceneChangeDetect": "TRANSITION_DETECTION"
+                                            }
+                                        }
+                                    },
+                                    "AudioDescriptions": []
+                                },
+                                {
+                                    "NameModifier": "_v540",
+                                    "ContainerSettings": {
+                                        "Container": "CMFC",
+                                        "CmfcSettings": {}
+                                    },
+                                    "VideoDescription": {
+                                        "Width": 960,
+                                        "Height": 540,
+                                        "ScalingBehavior": "DEFAULT",
+                                        "Sharpness": 50,
+                                        "CodecSettings": {
+                                            "Codec": "H_264",
+                                            "H264Settings": {
+                                                "RateControlMode": "QVBR",
+                                                "QvbrSettings": {
+                                                    "QvbrQualityLevel": 7
+                                                },
+                                                "MaxBitrate": 1800000,
+                                                "FramerateControl": "INITIALIZE_FROM_SOURCE",
+                                                "GopSizeUnits": "AUTO",
+                                                "GopClosedCadence": 1,
+                                                "NumberBFramesBetweenReferenceFrames": 3,
+                                                "SceneChangeDetect": "TRANSITION_DETECTION"
+                                            }
+                                        }
+                                    },
+                                    "AudioDescriptions": []
+                                },
+                                {
+                                    "NameModifier": "_v360",
+                                    "ContainerSettings": {
+                                        "Container": "CMFC",
+                                        "CmfcSettings": {}
+                                    },
+                                    "VideoDescription": {
+                                        "Width": 640,
+                                        "Height": 360,
+                                        "ScalingBehavior": "DEFAULT",
+                                        "Sharpness": 50,
+                                        "CodecSettings": {
+                                            "Codec": "H_264",
+                                            "H264Settings": {
+                                                "RateControlMode": "QVBR",
+                                                "QvbrSettings": {
+                                                    "QvbrQualityLevel": 7
+                                                },
+                                                "MaxBitrate": 900000,
+                                                "FramerateControl": "INITIALIZE_FROM_SOURCE",
+                                                "GopSizeUnits": "AUTO",
+                                                "GopClosedCadence": 1,
+                                                "NumberBFramesBetweenReferenceFrames": 2,
+                                                "SceneChangeDetect": "TRANSITION_DETECTION"
+                                            }
+                                        }
+                                    },
+                                    "AudioDescriptions": []
+                                },
+                                {
+                                    "NameModifier": "_aac_2_0",
+                                    "ContainerSettings": {
+                                        "Container": "CMFC",
+                                        "CmfcSettings": {}
+                                    },
+                                    "AudioDescriptions": [
+                                        {
+                                            "AudioSourceName": "Audio Selector 1",
+                                            "CodecSettings": {
+                                                "Codec": "AAC",
+                                                "AacSettings": {
+                                                    "Bitrate": 128000,
+                                                    "CodingMode": "CODING_MODE_2_0",
+                                                    "SampleRate": 48000
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "FollowSource": 1,
+                    "Inputs": [
+                        {
+                            "AudioSelectors": {
+                                "Audio Selector 1": {
+                                    "DefaultSelection": "DEFAULT"
+                                }
+                            },
+                            "VideoSelector": {},
+                            "TimecodeSource": "ZEROBASED",
+                            "FileInput": "{% 's3://${bucket_name}/' & $states.context.Execution.Input.detail.object.key %}"
+                        }
+                    ]
+                }
+            },
+            "Next": "Invalidate API Cache"
+        },
+        "Invalidate API Cache": {
+            "Arguments": {
+                "DistributionId": "${cloudfront_distribution_id}",
+                "InvalidationBatch": {
+                    "CallerReference": "API",
+                    "Paths": {
+                        "Items": [
+                            "/api/*"
+                        ],
+                        "Quantity": 1
+                    }
+                }
+            },
+            "Resource": "arn:aws:states:::aws-sdk:cloudfront:createInvalidation",
+            "Type": "Task",
+            "Next": "Delete Ingest Item"
+        },
+        "Delete Ingest Item": {
+            "Type": "Task",
+            "Arguments": {
+                "Bucket": "${bucket_name}",
+                "Key": "{% $states.context.Execution.Input.detail.object.key %}"
+            },
+            "Resource": "arn:aws:states:::aws-sdk:s3:deleteObject",
+            "End": true
+        }
+    },
+    "QueryLanguage": "JSONata"
+}
