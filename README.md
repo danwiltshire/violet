@@ -1,3 +1,15 @@
+# Violet
+
+A cloud-native media hosting solution for movies and TV shows.
+
+Violet has been a pet project of mine for the past five years, and I usually only work on it over Christmas, so progress has been pretty slow. Since it mainly exists as a way to experiment with different technologies, it’s gone through multiple rewrites in Golang, React, Angular, C# (Xbox UWP), AWS CDK, Terraform, and probably a few others I’ve forgotten.
+
+![Violet Hero](docs/images/Violet_Hero.png)
+
+## Architecture
+
+See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed diagrams.
+
 ## Developing
 
 ### Prerequisites
@@ -27,6 +39,14 @@
 2. `export AWS_DEFAULT_REGION=eu-west-2`
 3. `invoke build-and-deploy-frontend --environment-name prod`
 
-## Architecture
+## Deploying
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed diagrams.
+If you want to deploy Violet into your own AWS account, just know I don't provide any support.
+
+With that said, you'll need the following:
+
+- An API key for [The MovieDB](https://www.themoviedb.org) used for artwork collection.
+
+- An AWS CLI profile named `admin`.
+
+- An AWS Secret in `eu-west-2` named `/violet/prod/data_providers` with a JSON key named `THE_MOVIE_DB_API_KEY`.
