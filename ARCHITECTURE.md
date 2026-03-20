@@ -1,17 +1,5 @@
 # Architecture
 
-## Ingest Process
-
-```mermaid
-flowchart TD
-    A[Media file uploaded to s3://violet-prod-media/ingest/] --> B[EventBridge triggers Step Functions]
-    B --> C[Update Catalog: Lambda guesses metadata from filename]
-    C --> D["Transcode: Elemental MediaConvert creates HLS/DASH variants (1080p, 720p, etc.)"]
-    D --> E[Store transcoded files in s3://violet-prod-media/output/]
-    E --> F[Invalidate API Cache: CloudFront cache cleared]
-    F --> G[Delete original ingest file]
-```
-
 ## General Infrastructure
 
 ```mermaid
@@ -51,4 +39,17 @@ flowchart TD
     C --> H
     G --> J
     G --> C
+    J -.->|queries for TV/Movie metadata| C
+```
+
+## Ingest Process
+
+```mermaid
+flowchart TD
+    A[Media file uploaded to s3://violet-prod-media/ingest/] --> B[EventBridge triggers Step Functions]
+    B --> C[Update Catalog: Lambda guesses metadata from filename]
+    C --> D["Transcode: Elemental MediaConvert creates HLS/DASH variants (1080p, 720p, etc.)"]
+    D --> E[Store transcoded files in s3://violet-prod-media/output/]
+    E --> F[Invalidate API Cache: CloudFront cache cleared]
+    F --> G[Delete original ingest file]
 ```
