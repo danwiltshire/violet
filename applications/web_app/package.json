@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@angular/build": "^21.0.5",
-    "@angular/cli": "^21.0.5",
+    "@angular/cli": "^21.2.3",
     "@angular/compiler-cli": "^21.0.0",
     "@tailwindcss/postcss": "^4.1.12",
     "@types/video.js": "^7.3.58",
