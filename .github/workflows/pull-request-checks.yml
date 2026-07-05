@@ -1,0 +1,10 @@
+name: Pull request checks
+
+on:
+  pull_request:
+
+permissions: {}
+
+jobs:
+  build-images:
+    uses: ./.github/workflows/build-images.yml

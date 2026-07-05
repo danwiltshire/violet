@@ -1,0 +1,52 @@
+name: Build images
+
+on:
+  workflow_call:
+    outputs:
+      sha-tag:
+        description: The SHA tag of the built image
+        value: ${{ jobs.build-images.outputs.sha-tag }}
+
+permissions: {}
+
+jobs:
+  build-images:
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
+
+    outputs:
+      sha-tag: ${{ steps.image-ref.outputs.sha-tag }}
+
+    env:
+      image_name: violet-lambda
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.image_name }}
+          tags: |
+            type=raw,value=sha-${{ github.sha }}
+
+      - name: Build image
+        uses: docker/build-push-action@v7
+        with:
+          context: ./applications/violet_lambda_function
+          file: ./applications/violet_lambda_function/Dockerfile
+          push: false
+          provenance: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Record image tag
+        id: image-ref
+        run: echo "sha-tag=${image_name}:${{ steps.meta.outputs.version }}" >> "$GITHUB_OUTPUT"
