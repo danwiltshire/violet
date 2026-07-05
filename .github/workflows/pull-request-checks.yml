@@ -1,0 +1,16 @@
+on:
+  pull_request:
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Scan current project
+        uses: anchore/scan-action@v7
+        with:
+          path: "."
+          output-format: table
+          only-fixed: true
