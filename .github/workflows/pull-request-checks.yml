@@ -1,0 +1,6 @@
+on:
+  pull_request:
+
+jobs:
+  build-images:
+    uses: ./.github/workflows/build-images.yml
